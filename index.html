@@ -1,0 +1,235 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PurchasePilot</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f5f9;color:#172033;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
+header{background:#0f172a;color:white;padding:28px 20px}
+header h1{margin:0;font-size:30px}
+header p{color:#cbd5e1;margin-bottom:0}
+main{max-width:850px;margin:auto;padding:20px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:white;padding:20px;border-radius:16px;box-shadow:0 3px 12px #00000008;margin-bottom:16px}
+.stat{font-size:25px;font-weight:bold;color:#059669;margin-top:10px}
+small{color:#64748b}
+h2{font-size:20px;margin-top:0}
+input,select,button{width:100%;padding:13px;border-radius:10px;font-size:16px;margin:6px 0}
+input,select{border:1px solid #cbd5e1;background:white;color:#172033}
+button{background:#2563eb;color:white;border:0;font-weight:bold;cursor:pointer}
+label{display:block;font-size:14px;font-weight:600;margin-top:8px}
+.purchase{border-bottom:1px solid #e2e8f0;padding:16px 0}
+.purchase:last-child{border-bottom:0}
+.purchase h3{margin:0 0 8px}
+.price{font-weight:bold;color:#059669}
+.warning{color:#dc2626;font-weight:bold}
+.delete{background:#fee2e2;color:#b91c1c}
+footer{text-align:center;color:#64748b;padding:24px;font-size:13px}
+</style>
+</head>
+<body>
+<header>
+<h1>PurchasePilot</h1>
+<p>Shop smarter. Never miss a return.</p>
+</header>
+
+<main>
+<div class="stats">
+<div class="card">
+<small>Active purchases</small>
+<div class="stat" id="count">0</div>
+</div>
+<div class="card">
+<small>Pending refunds</small>
+<div class="stat" id="refunds">$0.00</div>
+</div>
+<div class="card">
+<small>Total purchase value</small>
+<div class="stat" id="total">$0.00</div>
+</div>
+<div class="card">
+<small>Returns due in 7 days</small>
+<div class="stat" id="due">0</div>
+</div>
+</div>
+
+<div class="card">
+<h2>Add a purchase</h2>
+<form id="purchaseForm">
+<label for="product">Product name</label>
+<input id="product" placeholder="Wireless headphones" required maxlength="150">
+
+<label for="store">Retailer</label>
+<input id="store" placeholder="Amazon, Target, Walmart..." required maxlength="100">
+
+<label for="price">Price ($)</label>
+<input id="price" type="number" min="0" step="0.01" placeholder="0.00" required>
+
+<label for="order">Order number (optional)</label>
+<input id="order" placeholder="Order number" maxlength="100">
+
+<label for="deadline">Return deadline (optional)</label>
+<input id="deadline" type="date">
+
+<label for="status">Purchase status</label>
+<select id="status">
+<option>Ordered</option>
+<option>Shipped</option>
+<option>Delivered</option>
+<option>Return requested</option>
+<option>Refunded</option>
+<option>Keeping</option>
+</select>
+<button type="submit">+ Add Purchase</button>
+</form>
+</div>
+
+<div class="card">
+<h2>Your purchases</h2>
+<div id="purchases"></div>
+</div>
+</main>
+
+<footer>
+PurchasePilot &copy; 2026<br>
+Your purchases. Your money. Your control.<br>
+Data is saved locally in your browser.
+</footer>
+
+<script>
+const key = "purchasepilot_v1";
+const $ = id => document.getElementById(id);
+let purchases = [];
+try {
+const saved = JSON.parse(localStorage.getItem(key) || "[]");
+if(Array.isArray(saved)) purchases = saved;
+} catch(e) {}
+
+const statuses = [
+"Ordered","Shipped","Delivered",
+"Return requested","Refunded","Keeping"
+];
+
+const money = n => Number(n).toLocaleString("en-US",{
+style:"currency",currency:"USD"
+});
+
+function save(){
+try {
+localStorage.setItem(key,JSON.stringify(purchases));
+} catch(e){
+alert("Browser storage is unavailable. Changes may not be saved.");
+}
+render();
+}
+
+function daysLeft(date){
+if(!date) return null;
+const now = new Date();
+const today = Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
+const parts = date.split("-").map(Number);
+const end = Date.UTC(parts[0],parts[1]-1,parts[2]);
+return Math.round((end-today)/86400000);
+}
+
+function active(p){
+return !["Refunded","Keeping"].includes(p.status);
+}
+
+function returnDue(p){
+const d = daysLeft(p.deadline);
+return active(p) && p.status !== "Return requested" &&
+d !== null && d >= 0 && d <= 7;
+}
+
+function element(tag,text,className){
+const node = document.createElement(tag);
+node.textContent = text;
+if(className) node.className = className;
+return node;
+}
+
+$("purchaseForm").addEventListener("submit",function(e){
+e.preventDefault();
+purchases.unshift({
+id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+product:$("product").value.trim(),
+store:$("store").value.trim(),
+price:Number($("price").value),
+order:$("order").value.trim(),
+deadline:$("deadline").value,
+status:$("status").value
+});
+this.reset();
+save();
+});
+
+function render(){
+$("count").textContent = purchases.filter(active).length;
+$("total").textContent = money(purchases.reduce((s,p)=>s+p.price,0));
+$("refunds").textContent = money(purchases.filter(
+p=>p.status==="Return requested"
+).reduce((s,p)=>s+p.price,0));
+$("due").textContent = purchases.filter(returnDue).length;
+
+const list = $("purchases");
+list.replaceChildren();
+
+if(!purchases.length){
+list.append(element("p","No purchases yet. Add your first purchase above!"));
+return;
+}
+
+purchases.forEach(p=>{
+const item = element("div","","purchase");
+item.append(element("h3",p.product));
+item.append(element("p",p.store+" · "+money(p.price),"price"));
+
+if(p.order){
+item.append(element("small","Order: "+p.order));
+}
+
+const d = daysLeft(p.deadline);
+if(d !== null && active(p) && p.status !== "Return requested"){
+const message = d < 0 ? "Return deadline passed" :
+d === 0 ? "Return deadline is today!" :
+"Return deadline in "+d+" day(s)";
+item.append(element("p",message,d<=7?"warning":""));
+}
+
+const select = document.createElement("select");
+select.setAttribute("aria-label","Purchase status");
+statuses.forEach(s=>{
+const option = element("option",s);
+option.value = s;
+option.selected = p.status === s;
+select.append(option);
+});
+
+select.addEventListener("change",()=>{
+p.status = select.value;
+save();
+});
+
+item.append(select);
+
+const del = element("button","Delete purchase","delete");
+del.addEventListener("click",()=>{
+if(confirm("Delete this purchase?")){
+purchases = purchases.filter(x=>x.id!==p.id);
+save();
+}
+});
+item.append(del);
+list.append(item);
+});
+}
+
+render();
+window.addEventListener("focus",render);
+</script>
+</body>
+</html>
