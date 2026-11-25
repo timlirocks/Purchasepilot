@@ -1,10 +1,17 @@
 {
   "name": "PurchasePilot",
   "short_name": "PurchasePilot",
-  "description": "Track purchases, return deadlines, and refunds.",
+  "description": "Track purchases, returns and refunds.",
   "start_url": "/Purchasepilot/",
   "scope": "/Purchasepilot/",
   "display": "standalone",
   "background_color": "#f1f5f9",
-  "theme_color": "#0f172a"
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "any",
+      "type": "image/png"
+    }
+  ]
 }
