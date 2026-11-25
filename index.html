@@ -1,235 +1,888 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+
 <title>PurchasePilot</title>
+
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#f1f5f9;color:#172033;font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif}
-header{background:#0f172a;color:white;padding:28px 20px}
-header h1{margin:0;font-size:30px}
-header p{color:#cbd5e1;margin-bottom:0}
-main{max-width:850px;margin:auto;padding:20px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.card{background:white;padding:20px;border-radius:16px;box-shadow:0 3px 12px #00000008;margin-bottom:16px}
-.stat{font-size:25px;font-weight:bold;color:#059669;margin-top:10px}
-small{color:#64748b}
-h2{font-size:20px;margin-top:0}
-input,select,button{width:100%;padding:13px;border-radius:10px;font-size:16px;margin:6px 0}
-input,select{border:1px solid #cbd5e1;background:white;color:#172033}
-button{background:#2563eb;color:white;border:0;font-weight:bold;cursor:pointer}
-label{display:block;font-size:14px;font-weight:600;margin-top:8px}
-.purchase{border-bottom:1px solid #e2e8f0;padding:16px 0}
-.purchase:last-child{border-bottom:0}
-.purchase h3{margin:0 0 8px}
-.price{font-weight:bold;color:#059669}
-.warning{color:#dc2626;font-weight:bold}
-.delete{background:#fee2e2;color:#b91c1c}
-footer{text-align:center;color:#64748b;padding:24px;font-size:13px}
+:root{
+  --navy:#0f172a;
+  --blue:#2563eb;
+  --green:#059669;
+  --red:#dc2626;
+  --orange:#ea580c;
+  --yellow:#ca8a04;
+  --slate:#64748b;
+  --light:#f1f5f9;
+  --border:#e2e8f0;
+  --white:#ffffff;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--light);
+  color:#172033;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+}
+
+header{
+  background:var(--navy);
+  color:white;
+  padding:34px 20px 30px;
+}
+
+.header-inner{
+  max-width:900px;
+  margin:auto;
+}
+
+header h1{
+  margin:0;
+  font-size:34px;
+  letter-spacing:-1px;
+}
+
+header p{
+  color:#cbd5e1;
+  margin:10px 0 0;
+  font-size:17px;
+}
+
+main{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 4px 18px rgba(15,23,42,.05);
+  margin-bottom:18px;
+}
+
+.stat-card{
+  min-height:125px;
+}
+
+.stat-label{
+  color:var(--slate);
+  font-size:14px;
+  margin-bottom:10px;
+}
+
+.stat{
+  font-size:28px;
+  font-weight:800;
+  color:var(--green);
+}
+
+.stat.red{
+  color:var(--red);
+}
+
+h2{
+  margin:0 0 16px;
+  font-size:22px;
+}
+
+label{
+  display:block;
+  font-size:14px;
+  font-weight:700;
+  margin:12px 0 6px;
+}
+
+input,
+select,
+button{
+  width:100%;
+  font:inherit;
+}
+
+input,
+select{
+  border:1px solid #cbd5e1;
+  border-radius:12px;
+  background:white;
+  padding:14px;
+  color:#172033;
+  outline:none;
+}
+
+input:focus,
+select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(37,99,235,.12);
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:14px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.primary{
+  background:var(--blue);
+  color:white;
+  margin-top:16px;
+}
+
+.secondary{
+  background:#e2e8f0;
+  color:#172033;
+}
+
+.danger{
+  background:#fee2e2;
+  color:#b91c1c;
+}
+
+.form-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.full{
+  grid-column:1/-1;
+}
+
+.toolbar{
+  display:grid;
+  grid-template-columns:1fr 180px;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.empty{
+  text-align:center;
+  color:var(--slate);
+  padding:30px 10px;
+}
+
+.purchase{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:12px;
+}
+
+.purchase-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.purchase h3{
+  margin:0;
+  font-size:18px;
+}
+
+.price{
+  font-weight:800;
+  color:var(--green);
+  white-space:nowrap;
+}
+
+.meta{
+  color:var(--slate);
+  font-size:14px;
+  margin:7px 0;
+}
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  margin-top:5px;
+}
+
+.badge.ordered{
+  background:#dbeafe;
+  color:#1d4ed8;
+}
+
+.badge.shipped{
+  background:#e0e7ff;
+  color:#4338ca;
+}
+
+.badge.delivered{
+  background:#dcfce7;
+  color:#15803d;
+}
+
+.badge.return-requested{
+  background:#ffedd5;
+  color:#c2410c;
+}
+
+.badge.refunded{
+  background:#d1fae5;
+  color:#047857;
+}
+
+.badge.keeping{
+  background:#f1f5f9;
+  color:#475569;
+}
+
+.deadline{
+  margin:10px 0;
+  padding:10px 12px;
+  border-radius:10px;
+  font-size:14px;
+  font-weight:700;
+}
+
+.deadline.ok{
+  background:#ecfdf5;
+  color:#047857;
+}
+
+.deadline.soon{
+  background:#fff7ed;
+  color:#c2410c;
+}
+
+.deadline.overdue{
+  background:#fef2f2;
+  color:#b91c1c;
+}
+
+.purchase-actions{
+  display:grid;
+  grid-template-columns:1fr 110px;
+  gap:8px;
+  margin-top:12px;
+}
+
+.section-note{
+  color:var(--slate);
+  font-size:13px;
+  margin-top:-8px;
+  margin-bottom:16px;
+}
+
+footer{
+  text-align:center;
+  color:var(--slate);
+  font-size:13px;
+  padding:28px 20px 38px;
+}
+
+@media(max-width:620px){
+  .form-grid{
+    grid-template-columns:1fr;
+  }
+
+  .full{
+    grid-column:auto;
+  }
+
+  .toolbar{
+    grid-template-columns:1fr;
+  }
+
+  .purchase-actions{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>PurchasePilot</h1>
-<p>Shop smarter. Never miss a return.</p>
+  <div class="header-inner">
+    <h1>PurchasePilot</h1>
+    <p>Shop smarter. Never miss a return.</p>
+  </div>
 </header>
 
 <main>
-<div class="stats">
-<div class="card">
-<small>Active purchases</small>
-<div class="stat" id="count">0</div>
-</div>
-<div class="card">
-<small>Pending refunds</small>
-<div class="stat" id="refunds">$0.00</div>
-</div>
-<div class="card">
-<small>Total purchase value</small>
-<div class="stat" id="total">$0.00</div>
-</div>
-<div class="card">
-<small>Returns due in 7 days</small>
-<div class="stat" id="due">0</div>
-</div>
-</div>
 
-<div class="card">
-<h2>Add a purchase</h2>
-<form id="purchaseForm">
-<label for="product">Product name</label>
-<input id="product" placeholder="Wireless headphones" required maxlength="150">
+  <div class="stats">
 
-<label for="store">Retailer</label>
-<input id="store" placeholder="Amazon, Target, Walmart..." required maxlength="100">
+    <div class="card stat-card">
+      <div class="stat-label">Active purchases</div>
+      <div class="stat" id="count">0</div>
+    </div>
 
-<label for="price">Price ($)</label>
-<input id="price" type="number" min="0" step="0.01" placeholder="0.00" required>
+    <div class="card stat-card">
+      <div class="stat-label">Pending refunds</div>
+      <div class="stat" id="refunds">$0.00</div>
+    </div>
 
-<label for="order">Order number (optional)</label>
-<input id="order" placeholder="Order number" maxlength="100">
+    <div class="card stat-card">
+      <div class="stat-label">Total purchase value</div>
+      <div class="stat" id="total">$0.00</div>
+    </div>
 
-<label for="deadline">Return deadline (optional)</label>
-<input id="deadline" type="date">
+    <div class="card stat-card">
+      <div class="stat-label">Returns due in 7 days</div>
+      <div class="stat" id="due">0</div>
+    </div>
 
-<label for="status">Purchase status</label>
-<select id="status">
-<option>Ordered</option>
-<option>Shipped</option>
-<option>Delivered</option>
-<option>Return requested</option>
-<option>Refunded</option>
-<option>Keeping</option>
-</select>
-<button type="submit">+ Add Purchase</button>
-</form>
-</div>
+  </div>
 
-<div class="card">
-<h2>Your purchases</h2>
-<div id="purchases"></div>
-</div>
+  <div class="card">
+
+    <h2>Add a purchase</h2>
+
+    <div class="section-note">
+      Enter a return deadline directly or let PurchasePilot calculate one from the purchase date and return window.
+    </div>
+
+    <form id="purchaseForm">
+
+      <div class="form-grid">
+
+        <div class="full">
+          <label for="product">Product name</label>
+          <input id="product" placeholder="Wireless headphones" required maxlength="150">
+        </div>
+
+        <div>
+          <label for="store">Retailer</label>
+          <input id="store" placeholder="Amazon, Target, Walmart..." required maxlength="100">
+        </div>
+
+        <div>
+          <label for="price">Price ($)</label>
+          <input id="price" type="number" min="0" step="0.01" placeholder="0.00" required>
+        </div>
+
+        <div>
+          <label for="order">Order number</label>
+          <input id="order" placeholder="Optional" maxlength="100">
+        </div>
+
+        <div>
+          <label for="purchaseDate">Purchase date</label>
+          <input id="purchaseDate" type="date">
+        </div>
+
+        <div>
+          <label for="returnWindow">Return window</label>
+          <select id="returnWindow">
+            <option value="">Choose</option>
+            <option value="7">7 days</option>
+            <option value="14">14 days</option>
+            <option value="30">30 days</option>
+            <option value="45">45 days</option>
+            <option value="60">60 days</option>
+            <option value="90">90 days</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="deadline">Return deadline</label>
+          <input id="deadline" type="date">
+        </div>
+
+        <div>
+          <label for="status">Status</label>
+          <select id="status">
+            <option>Ordered</option>
+            <option>Shipped</option>
+            <option>Delivered</option>
+            <option>Return requested</option>
+            <option>Refunded</option>
+            <option>Keeping</option>
+          </select>
+        </div>
+
+      </div>
+
+      <button class="primary" type="submit">+ Add Purchase</button>
+
+    </form>
+
+  </div>
+
+  <div class="card">
+
+    <h2>Your purchases</h2>
+
+    <div class="toolbar">
+      <input
+        id="search"
+        type="search"
+        placeholder="Search product or retailer..."
+      >
+
+      <select id="filter">
+        <option value="All">All statuses</option>
+        <option>Ordered</option>
+        <option>Shipped</option>
+        <option>Delivered</option>
+        <option>Return requested</option>
+        <option>Refunded</option>
+        <option>Keeping</option>
+      </select>
+    </div>
+
+    <div id="purchases"></div>
+
+  </div>
+
 </main>
 
 <footer>
-PurchasePilot &copy; 2026<br>
-Your purchases. Your money. Your control.<br>
-Data is saved locally in your browser.
+  PurchasePilot © 2026
+  <br>
+  Your purchases. Your money. Your control.
+  <br><br>
+  Data is stored locally in this browser.
 </footer>
 
 <script>
-const key = "purchasepilot_v1";
+
+const STORAGE_KEY = "purchasepilot_v1";
+
 const $ = id => document.getElementById(id);
+
 let purchases = [];
-try {
-const saved = JSON.parse(localStorage.getItem(key) || "[]");
-if(Array.isArray(saved)) purchases = saved;
-} catch(e) {}
 
-const statuses = [
-"Ordered","Shipped","Delivered",
-"Return requested","Refunded","Keeping"
-];
+try{
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 
-const money = n => Number(n).toLocaleString("en-US",{
-style:"currency",currency:"USD"
-});
+  if(Array.isArray(saved)){
+    purchases = saved.map(p => ({
+      id: p.id || createId(),
+      product: p.product || "",
+      store: p.store || "",
+      price: Number(p.price) || 0,
+      order: p.order || "",
+      purchaseDate: p.purchaseDate || "",
+      returnWindow: p.returnWindow || "",
+      deadline: p.deadline || "",
+      status: p.status || "Ordered"
+    }));
+  }
+}catch(e){
+  purchases = [];
+}
+
+function createId(){
+  if(window.crypto && crypto.randomUUID){
+    return crypto.randomUUID();
+  }
+
+  return Date.now().toString() + Math.random().toString(16).slice(2);
+}
+
+function money(value){
+  return Number(value || 0).toLocaleString("en-US",{
+    style:"currency",
+    currency:"USD"
+  });
+}
 
 function save(){
-try {
-localStorage.setItem(key,JSON.stringify(purchases));
-} catch(e){
-alert("Browser storage is unavailable. Changes may not be saved.");
-}
-render();
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(purchases));
+  render();
 }
 
-function daysLeft(date){
-if(!date) return null;
-const now = new Date();
-const today = Date.UTC(now.getFullYear(),now.getMonth(),now.getDate());
-const parts = date.split("-").map(Number);
-const end = Date.UTC(parts[0],parts[1]-1,parts[2]);
-return Math.round((end-today)/86400000);
+function parseDate(value){
+  if(!value) return null;
+
+  const parts = value.split("-").map(Number);
+
+  if(parts.length !== 3) return null;
+
+  return new Date(parts[0],parts[1]-1,parts[2]);
 }
 
-function active(p){
-return !["Refunded","Keeping"].includes(p.status);
+function formatDate(value){
+  const date = parseDate(value);
+
+  if(!date) return "";
+
+  return date.toLocaleDateString("en-US",{
+    month:"short",
+    day:"numeric",
+    year:"numeric"
+  });
 }
 
-function returnDue(p){
-const d = daysLeft(p.deadline);
-return active(p) && p.status !== "Return requested" &&
-d !== null && d >= 0 && d <= 7;
+function daysLeft(value){
+
+  const date = parseDate(value);
+
+  if(!date) return null;
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  date.setHours(0,0,0,0);
+
+  return Math.round((date - today) / 86400000);
 }
 
-function element(tag,text,className){
-const node = document.createElement(tag);
-node.textContent = text;
-if(className) node.className = className;
-return node;
+function calculateDeadline(){
+
+  const purchaseDate = $("purchaseDate").value;
+  const days = Number($("returnWindow").value);
+
+  if(!purchaseDate || !days){
+    return;
+  }
+
+  const date = parseDate(purchaseDate);
+
+  date.setDate(date.getDate() + days);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth()+1).padStart(2,"0");
+  const day = String(date.getDate()).padStart(2,"0");
+
+  $("deadline").value = `${year}-${month}-${day}`;
 }
 
-$("purchaseForm").addEventListener("submit",function(e){
-e.preventDefault();
-purchases.unshift({
-id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-product:$("product").value.trim(),
-store:$("store").value.trim(),
-price:Number($("price").value),
-order:$("order").value.trim(),
-deadline:$("deadline").value,
-status:$("status").value
+$("purchaseDate").addEventListener("change",calculateDeadline);
+$("returnWindow").addEventListener("change",calculateDeadline);
+
+$("purchaseForm").addEventListener("submit",event => {
+
+  event.preventDefault();
+
+  const price = Number($("price").value);
+
+  if(!Number.isFinite(price) || price < 0){
+    alert("Please enter a valid price.");
+    return;
+  }
+
+  purchases.unshift({
+    id:createId(),
+    product:$("product").value.trim(),
+    store:$("store").value.trim(),
+    price,
+    order:$("order").value.trim(),
+    purchaseDate:$("purchaseDate").value,
+    returnWindow:$("returnWindow").value,
+    deadline:$("deadline").value,
+    status:$("status").value
+  });
+
+  event.target.reset();
+
+  save();
 });
-this.reset();
-save();
-});
+
+$("search").addEventListener("input",render);
+$("filter").addEventListener("change",render);
+
+function activePurchase(p){
+  return !["Refunded","Keeping"].includes(p.status);
+}
+
+function badgeClass(status){
+
+  return status
+    .toLowerCase()
+    .replaceAll(" ","-");
+}
+
+function deadlineInfo(p){
+
+  if(!p.deadline){
+    return null;
+  }
+
+  if(["Refunded","Keeping"].includes(p.status)){
+    return null;
+  }
+
+  const days = daysLeft(p.deadline);
+
+  if(days === null){
+    return null;
+  }
+
+  if(days < 0){
+    return {
+      text:`Return deadline passed ${Math.abs(days)} day${Math.abs(days) === 1 ? "" : "s"} ago`,
+      className:"overdue"
+    };
+  }
+
+  if(days === 0){
+    return {
+      text:"Return deadline is today",
+      className:"soon"
+    };
+  }
+
+  if(days <= 7){
+    return {
+      text:`Return deadline in ${days} day${days === 1 ? "" : "s"}`,
+      className:"soon"
+    };
+  }
+
+  return {
+    text:`Return by ${formatDate(p.deadline)}`,
+    className:"ok"
+  };
+}
+
+function renderStats(){
+
+  $("count").textContent =
+    purchases.filter(activePurchase).length;
+
+  $("refunds").textContent =
+    money(
+      purchases
+        .filter(p => p.status === "Return requested")
+        .reduce((sum,p) => sum + Number(p.price || 0),0)
+    );
+
+  $("total").textContent =
+    money(
+      purchases.reduce(
+        (sum,p) => sum + Number(p.price || 0),
+        0
+      )
+    );
+
+  $("due").textContent =
+    purchases.filter(p => {
+
+      if(!activePurchase(p)) return false;
+
+      const d = daysLeft(p.deadline);
+
+      return d !== null && d >= 0 && d <= 7;
+
+    }).length;
+}
+
+function filteredPurchases(){
+
+  const query =
+    $("search").value.trim().toLowerCase();
+
+  const status =
+    $("filter").value;
+
+  return purchases.filter(p => {
+
+    const matchesSearch =
+      !query ||
+      p.product.toLowerCase().includes(query) ||
+      p.store.toLowerCase().includes(query) ||
+      (p.order || "").toLowerCase().includes(query);
+
+    const matchesStatus =
+      status === "All" ||
+      p.status === status;
+
+    return matchesSearch && matchesStatus;
+
+  });
+}
 
 function render(){
-$("count").textContent = purchases.filter(active).length;
-$("total").textContent = money(purchases.reduce((s,p)=>s+p.price,0));
-$("refunds").textContent = money(purchases.filter(
-p=>p.status==="Return requested"
-).reduce((s,p)=>s+p.price,0));
-$("due").textContent = purchases.filter(returnDue).length;
 
-const list = $("purchases");
-list.replaceChildren();
+  renderStats();
 
-if(!purchases.length){
-list.append(element("p","No purchases yet. Add your first purchase above!"));
-return;
-}
+  const container = $("purchases");
 
-purchases.forEach(p=>{
-const item = element("div","","purchase");
-item.append(element("h3",p.product));
-item.append(element("p",p.store+" · "+money(p.price),"price"));
+  container.innerHTML = "";
 
-if(p.order){
-item.append(element("small","Order: "+p.order));
-}
+  const visible = filteredPurchases();
 
-const d = daysLeft(p.deadline);
-if(d !== null && active(p) && p.status !== "Return requested"){
-const message = d < 0 ? "Return deadline passed" :
-d === 0 ? "Return deadline is today!" :
-"Return deadline in "+d+" day(s)";
-item.append(element("p",message,d<=7?"warning":""));
-}
+  if(!visible.length){
 
-const select = document.createElement("select");
-select.setAttribute("aria-label","Purchase status");
-statuses.forEach(s=>{
-const option = element("option",s);
-option.value = s;
-option.selected = p.status === s;
-select.append(option);
-});
+    const empty = document.createElement("div");
 
-select.addEventListener("change",()=>{
-p.status = select.value;
-save();
-});
+    empty.className = "empty";
 
-item.append(select);
+    empty.textContent =
+      purchases.length
+        ? "No purchases match your search."
+        : "No purchases yet. Add your first one above.";
 
-const del = element("button","Delete purchase","delete");
-del.addEventListener("click",()=>{
-if(confirm("Delete this purchase?")){
-purchases = purchases.filter(x=>x.id!==p.id);
-save();
-}
-});
-item.append(del);
-list.append(item);
-});
+    container.appendChild(empty);
+
+    return;
+  }
+
+  visible.forEach(p => {
+
+    const item = document.createElement("div");
+
+    item.className = "purchase";
+
+    const top = document.createElement("div");
+
+    top.className = "purchase-top";
+
+    const title = document.createElement("div");
+
+    const name = document.createElement("h3");
+
+    name.textContent = p.product;
+
+    const retailer = document.createElement("div");
+
+    retailer.className = "meta";
+
+    retailer.textContent = p.store;
+
+    title.appendChild(name);
+    title.appendChild(retailer);
+
+    const price = document.createElement("div");
+
+    price.className = "price";
+
+    price.textContent = money(p.price);
+
+    top.appendChild(title);
+    top.appendChild(price);
+
+    item.appendChild(top);
+
+    const badge = document.createElement("span");
+
+    badge.className =
+      `badge ${badgeClass(p.status)}`;
+
+    badge.textContent = p.status;
+
+    item.appendChild(badge);
+
+    if(p.order){
+
+      const order = document.createElement("div");
+
+      order.className = "meta";
+
+      order.textContent =
+        `Order: ${p.order}`;
+
+      item.appendChild(order);
+    }
+
+    if(p.purchaseDate){
+
+      const purchased = document.createElement("div");
+
+      purchased.className = "meta";
+
+      purchased.textContent =
+        `Purchased: ${formatDate(p.purchaseDate)}`;
+
+      item.appendChild(purchased);
+    }
+
+    const deadline = deadlineInfo(p);
+
+    if(deadline){
+
+      const box = document.createElement("div");
+
+      box.className =
+        `deadline ${deadline.className}`;
+
+      box.textContent =
+        deadline.text;
+
+      item.appendChild(box);
+    }
+
+    const actions = document.createElement("div");
+
+    actions.className = "purchase-actions";
+
+    const select = document.createElement("select");
+
+    [
+      "Ordered",
+      "Shipped",
+      "Delivered",
+      "Return requested",
+      "Refunded",
+      "Keeping"
+    ].forEach(status => {
+
+      const option = document.createElement("option");
+
+      option.value = status;
+      option.textContent = status;
+      option.selected = p.status === status;
+
+      select.appendChild(option);
+
+    });
+
+    select.addEventListener("change",() => {
+
+      p.status = select.value;
+
+      save();
+
+    });
+
+    const deleteButton = document.createElement("button");
+
+    deleteButton.className = "danger";
+
+    deleteButton.textContent = "Delete";
+
+    deleteButton.addEventListener("click",() => {
+
+      if(confirm(`Delete "${p.product}"?`)){
+
+        purchases =
+          purchases.filter(x => x.id !== p.id);
+
+        save();
+      }
+
+    });
+
+    actions.appendChild(select);
+    actions.appendChild(deleteButton);
+
+    item.appendChild(actions);
+
+    container.appendChild(item);
+
+  });
 }
 
 render();
+
 window.addEventListener("focus",render);
+
 </script>
+
 </body>
 </html>
