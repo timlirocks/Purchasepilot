@@ -7,6 +7,23 @@
 
 <title>PurchasePilot</title>
   <link rel="apple-touch-icon" href="icon.png">
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "01fb8319-da1c-4ad6-9425-217de402d997",
+    safari_web_id: "web.onesignal.auto.4924b4f0-134c-425c-876d-dc71d8371c02",
+    serviceWorkerPath: "/Purchasepilot/push/OneSignalSDKWorker.js",
+    serviceWorkerParam: {
+      scope: "/Purchasepilot/push/"
+    },
+    notifyButton: {
+      enable: true
+    }
+  });
+});
+</script>
 <link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
